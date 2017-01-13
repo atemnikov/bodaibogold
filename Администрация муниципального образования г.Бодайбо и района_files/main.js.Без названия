@@ -1,0 +1,102 @@
+/*!
+ * jQuery Cookie Plugin v1.3
+ * https://github.com/carhartl/jquery-cookie
+ *
+ * Copyright 2011, Klaus Hartl
+ * Dual licensed under the MIT or GPL Version 2 licenses.
+ * http://www.opensource.org/licenses/mit-license.php
+ * http://www.opensource.org/licenses/GPL-2.0
+ */
+ (function(e,h,j){function k(b){return b}function l(b){return decodeURIComponent(b.replace(m," "))}var m=/\+/g,d=e.cookie=function(b,c,a){if(c!==j){a=e.extend({},d.defaults,a);null===c&&(a.expires=-1);if("number"===typeof a.expires){var f=a.expires,g=a.expires=new Date;g.setDate(g.getDate()+f)}c=d.json?JSON.stringify(c):String(c);return h.cookie=[encodeURIComponent(b),"=",d.raw?c:encodeURIComponent(c),a.expires?"; expires="+a.expires.toUTCString():"",a.path?"; path="+a.path:"",a.domain?"; domain="+
+a.domain:"",a.secure?"; secure":""].join("")}c=d.raw?k:l;a=h.cookie.split("; ");f=0;for(g=a.length;f<g;f++){var i=a[f].split("=");if(c(i.shift())===b)return b=c(i.join("=")),d.json?JSON.parse(b):b}return null};d.defaults={};e.removeCookie=function(b,c){return null!==e.cookie(b)?(e.cookie(b,null,c),!0):!1}})(jQuery,document);
+
+
+jQuery(document).ready(function ($) {
+	//Прячем напоминание говнобраузерам
+	chromeframe = $(".chromeframe");
+	chromeframe.addClass($.cookie("hide")); //Добавляем класс элементу на основе значения cookie
+	$("a.closeframe").click(function () { 
+		$.cookie("hide","hidden"); //назначаем куки
+		chromeframe.slideUp(500, function(){
+			chromeframe.addClass($.cookie("hide"));
+		});	
+		return false;
+	});
+	// Обработка кликов по псевдо-ссылкам на скачивание браузеров
+	$('.chromeframe .but').click(function(){window.open($(this).data("href"));return false;});
+
+	// инициализация карусели
+	$('#jq-carousel-main').jcarousel({
+		scroll: 1,
+		auto: 5,
+		wrap: 'circular'
+	});
+	$('#jq-carousel-announce').jcarousel({
+		scroll: 1
+	});
+	$('#jq-carousel-album').jcarousel({
+		scroll: 1
+	});
+	$('#jq-carousel-banner').jcarousel({
+		scroll: 1
+	});
+	$('#jq-carousel-face').jcarousel({
+		scroll: 1,
+		wrap: 'circular'
+	});
+	$('.side li div > a').click(function (ev) {
+		if ($(this).next().length) {
+			ev.preventDefault();
+			$(this).parent().parent().toggleClass('selected');
+		}
+	});
+});
+
+var $Menu = {
+	init: function () {
+		var _class = this;
+
+		if (!document.createTouch) {
+			$(document.documentElement).addClass('desktop');
+		} else {
+			$(document).on('touchstart', function (e) {
+				var _parent = $(e.target).parent();
+
+				if (_parent.is('.link')) {
+					var _item = _parent.closest('.first_item');
+
+					if (_item.length) {
+						var _list = _item.find('.second');
+
+						if (_list.length) {
+							e.preventDefault();
+
+							if (!_item.hasClass('active')) {
+								_item.addClass('active');
+								if (_class.olditem) {
+									_class.olditem.removeClass('active');
+								}
+								_class.olditem = _item;
+							} else {
+								_item.removeClass('active');
+							}
+						}
+					} else {
+						
+					}
+				} else {
+					_parent = $(e.target).closest('.second');
+
+					if (_parent.length) {
+						
+					} else {
+						if (_class.olditem) {
+							_class.olditem.removeClass('active');
+						}
+					}
+				}
+			});
+		}
+	}
+};
+$Menu.init();
